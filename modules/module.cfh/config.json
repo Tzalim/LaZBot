@@ -1,60 +1,83 @@
 {
-
-    "id":"cfh",
-
-    "name":"CubsFanHan Discord Fun",
-
-    "version":"1.3",
-    
-    "type":"command",
-    
-    "permission":"admin",
-    
-    "commands":{
-    
-    	"points":{
-			"aliases":["cfh","cfhp"],
-			"procedure":"karma",
-			"args":["text"],
-			"color":"0xFFDF00",
-			"help":{
-	    		"id":"points",
-		        "title":"CubsFanHan Points",
-		        "text":"Karma is a bitch...CFH shoots first",
-		        "example":"*%PREFIX%%COMMAND% <+-points> <mention>*\n*%PREFIX%%COMMAND% <mention>*"
-	    	},
-			"subcommands":{ 
-				"report":{
-					"aliases":["r"],
-					"procedure":"report",
-					"args":["num"],
-					"help":{
-			    		"id":"report",
-				        "title":"CubsFanHan Points",
-				        "text":"Report top or bottom points",
-				        "example":""
-			    	}
-			    }
-			}
-		}
-    
-    },
-    "help":{
-    	
-    	"points":{
-    		"id":"points",
-	        "title":"CFH Points",
-	        "text":"Karma is a bitch...CFH shoots first",
-	        "example":"*%PREFIX%%COMMAND% <+-points> <mention>*\n*%PREFIX%%COMMAND% <mention>*"
-    	}
-
-    },
-    
-    "queries":{
-    	
-    	"GET_KARMA":"SELECT * FROM `karma` WHERE `serverId` = ? AND `carrier` = ?",
-    	"SET_KARMA":"INSERT INTO `karma` (`serverId`, `carrier`, `karma`, `log`) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `karma`=(VALUES(`karma`)+`karma`), `log`=CONCAT(`log`,VALUES(`log`))"
-    	
+  "id": "cfh",
+  "name": "CubsFanHan Discord Fun",
+  "version": "2.2",
+  "type": "command",
+  "permission": "anyone",
+  "commands": {
+    "points": {
+      "aliases": [
+        "cfh",
+        "cfhp"
+      ],
+      "procedure": "doPoints",
+      "args": [
+        "text"
+      ],
+      "permission": "anyone",
+      "help": {
+        "id": "points",
+        "title": "CubsFanHan Points",
+        "text": "CFHan Shoots First...",
+        "example": "%PREFIX%%COMMAND% <+-points> <mention> [reason]\n%PREFIX%%COMMAND% <mention>"
+      },
+      "subcommands": {
+        "report": {
+          "aliases": [
+            "list"
+          ],
+          "procedure": "doPointsReport",
+          "args": [
+            "num"
+          ],
+          "permission": "anyone",
+          "help": {
+            "id": "report",
+            "title": "CubsFanHan Points Report",
+            "text": "Report top or bottom points by num",
+            "example": "%PREFIX%%SUBCMD% [+-num]"
+          }
+        },
+        "see": {
+          "aliases": [
+            "s"
+          ],
+          "procedure": "doPointsSee",
+          "args": [
+            "text"
+          ],
+          "permission": "anyone",
+          "help": {
+            "id": "see",
+            "title": "See CubsFanHan Points",
+            "text": "See you CFH Points by mention",
+            "example": "%PREFIX%%SUBCMD% <mention>"
+          }
+        },
+        "reset": {
+          "aliases": [
+            "clear"
+          ],
+          "procedure": "doPointsReset",
+          "args": [
+            "text"
+          ],
+          "permission": "admin",
+          "help": {
+            "id": "reset",
+            "title": "Reset the server's CFH Points",
+            "text": "Clear the whole server and start fresh",
+            "example": "%PREFIX%%SUBCMD%"
+          }
+        }
+      }
     }
-    
+  },
+  "queries":{
+	
+	"GET_KARMA":"SELECT * FROM `karma` WHERE `serverId` = ? AND `carrier` = ?",
+	"SET_KARMA":"INSERT INTO `karma` (`serverId`, `carrier`, `karma`, `log`) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `karma`=(VALUES(`karma`)+`karma`), `log`=CONCAT(`log`,VALUES(`log`))"
+	
+  }
+  
 }

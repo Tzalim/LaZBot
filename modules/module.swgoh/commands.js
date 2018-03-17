@@ -1,151 +1,22 @@
-async function doSwgoh( obj ) {
-	if( obj.cmdObj.args.id === 'help' ) { return obj.help(obj.cmdObj.help); }
-	let register = null;
-	try {
-		register = await getRegister( obj );
-		if( obj.cmdObj.subcmd ) {
-			let process = obj.moduleConfig.commands[obj.cmdObj.cmd].subcommands[obj.cmdObj.subcmd].procedure
-			return require('./swgoh.js')[process]( obj, register ); 
-		} else {
-			return require('./swgoh.js')["find"]( obj, register );
-		}
-		return false;
-	} catch(e) {
-		obj.error('doSwgoh',e);
-	}
-}
-
-async function doHeist( obj ) {
-	if( obj.cmdObj.args.id === 'help' ) { return obj.help(obj.cmdObj.help); }
-	if( obj.cmdObj.subcmd ) {
-		let process = obj.moduleConfig.commands[obj.cmdObj.cmd].subcommands[obj.cmdObj.subcmd].procedure
-		return require('./heist.js')[process]( obj ); 
-	} else {
-		return require('./heist.js')["heist"]( obj );
-	}
-	return false;
-}
-
-async function doEvent( obj ) {
-    if( obj.cmdObj.args.id === 'help' ) { return obj.help(obj.cmdObj.help); }
-    if( obj.cmdObj.subcmd ) {
-        let process = obj.moduleConfig.commands[obj.cmdObj.cmd].subcommands[obj.cmdObj.subcmd].procedure
-        return require('./event.js')[process]( obj ); 
-    } else {
-        return require('./event.js')["event"]( obj );
-    }
-    return false;
-}
-
-async function doDaily( obj ) {
-    if( obj.cmdObj.args.id === 'help' ) { return obj.help(obj.cmdObj.help); }
-    if( obj.cmdObj.subcmd ) {
-        let process = obj.moduleConfig.commands[obj.cmdObj.cmd].subcommands[obj.cmdObj.subcmd].procedure
-        return require('./daily.js')[process]( obj ); 
-    } else {
-        return require('./daily.js')["daily"]( obj );
-    }
-    return false;
-}
-
-async function doMod( obj ) {
-	if( obj.cmdObj.args.id === 'help' ) { return obj.help(obj.cmdObj.help); }
-	let register = null;
-	try {
-		register = await getRegister( obj );
-		if( obj.cmdObj.subcmd ) {
-			let process = obj.moduleConfig.commands[obj.cmdObj.cmd].subcommands[obj.cmdObj.subcmd].procedure
-			return require('./mod.js')[process]( obj, register ); 
-		} else {
-			return require('./mod.js')["mod"]( obj, register );
-		}
-		return false;
-	} catch(e) {
-		obj.error('doMod',e);
-	}
-}
-
-async function doZeta( obj ) {
-	if( obj.cmdObj.args.id === 'help' ) { return obj.help(obj.cmdObj.help); }
-	let register = null;
-	try {
-		register = await getRegister( obj );
-		if( obj.cmdObj.subcmd ) {
-			let process = obj.moduleConfig.commands[obj.cmdObj.cmd].subcommands[obj.cmdObj.subcmd].procedure
-			return require('./zeta.js')[process]( obj, register ); 
-		} else {
-			return require('./zeta.js')["zeta"]( obj, register );
-		}
-		return false;
-	} catch(e) {
-		obj.error('doZeta',e);
-	}
-}
-
-async function doArena( obj ) {
-	if( obj.cmdObj.args.id === 'help' ) { return obj.help(obj.cmdObj.help); }
-	let register = null;
-	try {
-		register = await getRegister( obj );
-		if( obj.cmdObj.subcmd ) {
-			let process = obj.moduleConfig.commands[obj.cmdObj.cmd].subcommands[obj.cmdObj.subcmd].procedure
-			return require('./arena.js')[process]( obj, register ); 
-		} else {
-			return require('./arena.js')["arena"]( obj, register );
-		}
-		return false;
-	} catch(e) {
-		obj.error('doArena',e);
-	}
-}
-
-async function doGuild( obj ) {
-	if( obj.cmdObj.args.text === 'help' ) { return obj.help(obj.cmdObj.help); }
-	if( obj.cmdObj.subcmd ) {
-		let process = obj.moduleConfig.commands[obj.cmdObj.cmd].subcommands[obj.cmdObj.subcmd].procedure
-		return require('./guild.js')[process]( obj ); 
-	} else {
-		return require('./guild.js')["guild"]( obj );
-	}
-	return false;
-}
-
-async function doRSS( obj ) {
-    const PermissionHandler = require(obj.clientConfig.path+'/utilities/permission-handler.js');
-    let pHandler = new PermissionHandler(obj.clientConfig, obj.ModuleConfig, obj.message);
-    if( await pHandler.authorIs('admin') ) { 
-	    if( obj.cmdObj.args.id === 'help' || obj.cmdObj.args.text === 'help' ) { return obj.help(obj.cmdObj.help); }
-	    if( obj.cmdObj.subcmd ) {
-	        let process = obj.moduleConfig.commands[obj.cmdObj.cmd].subcommands[obj.cmdObj.subcmd].procedure
-	        return require('./rss.js')[process]( obj ); 
-	    } else {
-	        return require('./rss.js')["rssAdd"]( obj );
-	    }
-    } else { 
-        return obj.message.react(obj.clientConfig.settings.reaction.DENIED);        
-    }
-    return false;
-}
-
 async function getRegister( obj ) {
 	
 	try {
 		let query, args = null;
-	    if( obj.cmdObj.args.discordId ) {
-	    	query = obj.moduleConfig.queries.GET_REGISTER_BY_DID;
-	    	args  = [obj.cmdObj.args.discordId];
+	    if( obj.command.args.discordId ) {
+	    	query = obj.module.queries.GET_REGISTER_BY_DID;
+	    	args  = [obj.command.args.discordId];
 	    } else {
-	    	if( obj.cmdObj.args.allycode ) { 
-	        	query = obj.moduleConfig.queries.GET_REGISTER_BY_ALLYCODE;
-	        	args  = [obj.cmdObj.args.allycode];
+	    	if( obj.command.args.allycode ) { 
+	        	query = obj.module.queries.GET_REGISTER_BY_ALLYCODE;
+	        	args  = [obj.command.args.allycode];
 	        } else {
-	        	query = obj.moduleConfig.queries.GET_REGISTER_BY_PLAYER;
-	        	args  = ['%'+obj.cmdObj.args.id+'%'];
+	        	query = obj.module.queries.GET_REGISTER_BY_PLAYER;
+	        	args  = ['%'+obj.command.args.id+'%'];
 	        }
 	    }
 	    
 	    try {
-	        let result = await require(obj.clientConfig.path+'/utilities/db-handler.js').doSQL(obj.clientConfig.settings.database, query, args);
+	        let result = await obj.instance.dbHandler.doSQL(obj.instance.settings.database, query, args);
 	        if( result.length === 0 ) { return false; }
 	        return result;
 	    } catch(e) {
@@ -157,34 +28,99 @@ async function getRegister( obj ) {
 }
 
 
-
 /** EXPORTS **/
-module.exports = { 
-	doSwgoh: async ( obj ) => { 
-    	return await doSwgoh( obj ); 
+module.exports = { 		
+	arena: async ( obj ) => { 
+		try {
+			let register = await getRegister( obj );
+	    	return await require('./arena.js')["arena"]( obj, register );
+		} catch(e) { obj.error('arena.getRegister',e); }
     },
-    doArena: async ( obj ) => { 
-    	return await doArena( obj ); 
+	arenaUnits: async ( obj ) => { 
+		try {
+			let register = await getRegister( obj );
+	    	return await require('./arena.js')["arenaUnits"]( obj, register );
+		} catch(e) { obj.error('arenaUnits.getRegister',e); }
     },
-    doHeist: async ( obj ) => { 
-    	return await doHeist( obj ); 
+    daily: async ( obj ) => {
+        return require('./daily.js')["daily"]( obj );
     },
-    doEvent: async ( obj ) => { 
-        return await doEvent( obj ); 
+    event: async ( obj ) => { 
+        return require('./event.js')["event"]( obj );
     },
-    doMod: async ( obj ) => { 
-    	return await doMod( obj ); 
+    guild: async ( obj ) => { 
+		return require('./guild.js')["guild"]( obj );
     },
-    doZeta: async ( obj ) => { 
-    	return await doZeta( obj ); 
+    guildDetails: async ( obj ) => { 
+		return require('./guild.js')["guildDetails"]( obj );
     },
-    doGuild: async ( obj ) => { 
-    	return await doGuild( obj ); 
+    guildStats: async ( obj ) => { 
+		return require('./guild.js')["guildStats"]( obj );
     },
-    doDaily: async ( obj ) => {
-        return await doDaily( obj );
+    heist: async ( obj ) => { 
+		return require('./heist.js')["heist"]( obj );
     },
-    doRSS: async (obj ) => {
-        return await doRSS( obj );
+    mod: async ( obj ) => { 
+		try {
+			let register = await getRegister( obj );
+			return require('./mod.js')["mod"]( obj, register );
+		} catch(e) { obj.error('mod.getRegister',e); }
+    },
+    random: async ( obj ) => { 
+    	try {
+			let register = await getRegister( obj );
+			return require('./random.js')["random"]( obj, register );
+		} catch(e) { obj.error('random.getRegister',e); }
+    },
+    rssAdd: async (obj ) => {
+    	try {
+    		let pHandler = new obj.instance.permHandler(obj.instance, obj.ModuleConfig, obj.message);
+	        if( await !pHandler.authorIs('admin') ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }  
+	        return require('./rss.js')["rssAdd"]( obj );	    	
+		} catch(e) { obj.error('rssAdd.Permissions',e); }
+    },
+    rssRemove: async (obj ) => {
+    	try {
+    		let pHandler = new obj.instance.permHandler(obj.instance, obj.ModuleConfig, obj.message);
+	        if( await !pHandler.authorIs('admin') ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }  
+	        return require('./rss.js')["rssRemove"]( obj );	    	
+		} catch(e) { obj.error('rssRemove.Permissions',e); }
+    },
+    swAdd: async ( obj ) => { 
+    	try {
+			let register = await getRegister( obj );
+			return require('./swgoh.js')["add"]( obj, register );
+		} catch(e) { obj.error('swAdd.getRegister',e); }
+    },
+    swUpdate: async ( obj ) => { 
+    	try {
+			let register = await getRegister( obj );
+			return require('./swgoh.js')["update"]( obj, register );
+		} catch(e) { obj.error('swUpdate.getRegister',e); }
+    },
+    swRemove: async ( obj ) => { 
+    	try {
+			let register = await getRegister( obj );
+			return require('./swgoh.js')["remove"]( obj, register );
+		} catch(e) { obj.error('swRemove.getRegister',e); }
+    },
+    swFind: async ( obj ) => { 
+    	try {
+			let register = await getRegister( obj );
+			return require('./swgoh.js')["find"]( obj, register );
+		} catch(e) { obj.error('swFind.getRegister',e); }
+    },
+    zeta: async ( obj ) => { 
+    	try {
+			let register = await getRegister( obj );
+			return require('./zeta.js')["zeta"]( obj, register );
+		} catch(e) { obj.error('zeta.getRegister',e); }
+    },
+    zetaSuggest: async ( obj ) => { 
+    	try {
+			let register = await getRegister( obj );
+			return require('./zeta.js')["zetaSuggest"]( obj, register );
+		} catch(e) { obj.error('zeta.getRegister',e); }
     }
+
 }
